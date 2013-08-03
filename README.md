@@ -37,26 +37,11 @@ marked.setOptions({
   langPrefix: 'lang-'
 });
 
-console.log(marked('I am using __markdown__.'));
-
-marked('A piece of code:
-
-	```javascript
-		function entity(a) {
-			return a;
-		}
-	```
-
-	',
-	function (err, result) {
-		if (err) {
-			console.error(err);
-		} else {
-			console.log(result);
-		}
-	}
-);
-
+// Using async version of marked
+marked('I am using __markdown__.', function (err, content) {
+  if (err) throw err;
+  console.log(content);
+});
 ```
 
 Note that the above example, the first call to `marked` doesn't require a callback function because the markdown text to parse doesn't contain any piece of source code unlike the second call which requires a callback function because this example uses an asynchronous library to highlight the source code syntax.
@@ -76,14 +61,8 @@ Hash of options. Can also be set using the `marked.setOptions` method as seen ab
 ### callback
 Type: `Function`
 
-Function called when the `markdownString` has been fully parsed. If the `options` argument is omitted, this can be used as the second argument as follows:
-```js
-marked(markdownString, function (err, content) {
-  if (err) throw err;
-  console.log(content);
-  // Outputs parsed html
-});
-```
+Function called when the `markdownString` has been fully parsed when using async highlighting. If the `options` argument is omitted, this can be used as the second argument as seen above:
+
 ## Options
 
 ### gfm
@@ -100,7 +79,7 @@ A function to highlight code blocks. The function takes three arguments: code, l
 ```js
 marked.setOptions({
   highlight: function (code, lang) {
-    return hljs.highlightAuto(lang, code).value;
+    return hljs.highlightAuto(code, lang).value;
   }
 });
 ```
@@ -146,7 +125,7 @@ Conform to obscure parts of `markdown.pl` as much as possible. Don't fix any of 
 
 ### sanitize
 Type: `Boolean`
-Default: `true`
+Default: `false`
 
 Sanitize the output. Ignore any HTML that has been input.
 
